@@ -2,28 +2,12 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import logo from "../assets/logo.png";
 import "./Navbar.css";
+import { FaChevronDown, FaBars, FaTimes } from "react-icons/fa";
 
-import {
-  FaPhoneAlt,
-  FaFacebookF,
-  FaInstagram,
-  FaYoutube,
-  FaChevronDown,
-  FaBars,
-  FaTimes,
-} from "react-icons/fa";
-
-type MenuType =
-  | "about"
-  | "internship"
-  | "courses"
-  | "services"
-  | "projects"
-  | null;
+type MenuType = "internship" | "courses" | "services" | "projects" | null;
 
 const Navbar = () => {
   const [openMenu, setOpenMenu] = useState<MenuType>(null);
-
   const [mobileMenu, setMobileMenu] = useState(false);
 
   const navRef = useRef<HTMLElement | null>(null);
@@ -34,6 +18,7 @@ const Navbar = () => {
 
   const toggleMobileMenu = () => {
     setMobileMenu((prev) => !prev);
+    setOpenMenu(null);
   };
 
   const closeMenu = () => {
@@ -48,74 +33,67 @@ const Navbar = () => {
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
+    const handleResize = () => {
+      if (window.innerWidth > 768) {
+        setMobileMenu(false);
+      }
+    };
 
-    return () =>
-      document.removeEventListener(
-        "mousedown",
-        handleClickOutside
-      );
+    document.addEventListener("mousedown", handleClickOutside);
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
   return (
     <nav className="navbar" ref={navRef}>
       <div className="navbar-inner">
-
-        {/* LOGO */}
-        <div className="logo">
-          <Link to="/" onClick={closeMenu}>
-            <img src={logo} alt="logo" />
-          </Link>
-        </div>
-
-        {/* MOBILE MENU BUTTON */}
         <button
           className="menu-toggle"
           onClick={toggleMobileMenu}
+          aria-label="Toggle navigation menu"
+          aria-expanded={mobileMenu}
+          aria-controls="primary-navigation"
+          type="button"
         >
           {mobileMenu ? <FaTimes /> : <FaBars />}
         </button>
 
-        {/* NAV LINKS */}
+        <div className="logo">
+          <Link to="/" onClick={closeMenu} aria-label="Go to home">
+            <img src={logo} alt="Innovix Trio logo" />
+          </Link>
+        </div>
+
         <ul
-          className={`nav-links ${
-            mobileMenu ? "show-menu" : ""
-          }`}
+          id="primary-navigation"
+          className={`nav-links ${mobileMenu ? "show-menu" : ""}`}
         >
           <li className="nav-item">
-            <Link
-              to="/"
-              onClick={closeMenu}
-              className="nav-link"
-            >
+            <Link to="/" onClick={closeMenu} className="nav-link">
               Home
             </Link>
           </li>
 
           <li className="nav-item">
-            <Link
-              to="/about"
-              onClick={closeMenu}
-              className="nav-link"
-            >
+            <Link to="/about" onClick={closeMenu} className="nav-link">
               About
             </Link>
           </li>
 
-          {/* INTERNSHIPS */}
           <li
             className={`nav-item dropdown ${
-              openMenu === "internship"
-                ? "active"
-                : ""
+              openMenu === "internship" ? "active" : ""
             }`}
           >
             <button
               type="button"
               className="nav-button"
-              onClick={() =>
-                toggleMenu("internship")
-              }
+              onClick={() => toggleMenu("internship")}
+              aria-expanded={openMenu === "internship"}
             >
               Internships <FaChevronDown />
             </button>
@@ -123,114 +101,77 @@ const Navbar = () => {
             {openMenu === "internship" && (
               <div className="dropdown-box mega">
                 <div className="mega-col">
-                  <h4>Technical</h4>
-
-                  <Link
-                    to="/internships#full-stack-development"
-                    onClick={closeMenu}
-                  >
+                  <h4>Software Development</h4>
+                  <Link to="/internships#full-stack-development" onClick={closeMenu}>
                     Full Stack Development
                   </Link>
-
-                  <Link
-                    to="/internships#machine-learning"
-                    onClick={closeMenu}
-                  >
-                    Machine Learning
-                  </Link>
-
-                  <Link
-                    to="/internships#artificial-intelligence"
-                    onClick={closeMenu}
-                  >
-                    Artificial Intelligence
-                  </Link>
-
-                  <Link
-                    to="/internships#python-programming"
-                    onClick={closeMenu}
-                  >
+                  <Link to="/internships#python-programming" onClick={closeMenu}>
                     Python Programming
                   </Link>
-
-                  <Link
-                    to="/internships#c-cpp-java"
-                    onClick={closeMenu}
-                  >
-                    C, C++, Java
+                  <Link to="/internships#programming-fundamentals" onClick={closeMenu}>
+                    Programming Fundamentals
                   </Link>
+                  <Link to="/internships#software-engineering" onClick={closeMenu}>
+                    Software Engineering
+                  </Link>
+                </div>
 
-                  <Link
-                    to="/internships#cloud-computing"
-                    onClick={closeMenu}
-                  >
+                <div className="mega-col">
+                  <h4>Artificial Intelligence</h4>
+                  <Link to="/internships#artificial-intelligence" onClick={closeMenu}>
+                    Artificial Intelligence
+                  </Link>
+                  <Link to="/internships#machine-learning" onClick={closeMenu}>
+                    Machine Learning
+                  </Link>
+                  <Link to="/internships#prompt-engineering" onClick={closeMenu}>
+                    AI Prompt Engineering
+                  </Link>
+                </div>
+
+                <div className="mega-col">
+                  <h4>Cloud & DevOps</h4>
+                  <Link to="/internships#cloud-computing" onClick={closeMenu}>
                     Cloud Computing
                   </Link>
                 </div>
 
                 <div className="mega-col">
-                  <h4>Creative & Testing</h4>
-
-                  <Link
-                    to="/internships#ui-ux-design"
-                    onClick={closeMenu}
-                  >
-                    UI/UX Design
-                  </Link>
-
-                  <Link
-                    to="/internships#graphic-design"
-                    onClick={closeMenu}
-                  >
-                    Graphic Design
-                  </Link>
-
-                  <Link
-                    to="/internships#video-editing"
-                    onClick={closeMenu}
-                  >
-                    Video Editing
-                  </Link>
-
-                  <Link
-                    to="/internships#manual-testing"
-                    onClick={closeMenu}
-                  >
+                  <h4>Quality Assurance</h4>
+                  <Link to="/internships#manual-testing" onClick={closeMenu}>
                     Manual Testing
                   </Link>
-
-                  <Link
-                    to="/internships#automation-testing"
-                    onClick={closeMenu}
-                  >
+                  <Link to="/internships#automation-testing" onClick={closeMenu}>
                     Automation Testing
                   </Link>
+                </div>
 
-                  <Link
-                    to="/internships#software-engineering"
-                    onClick={closeMenu}
-                  >
-                    Software Engineering
+                <div className="mega-col">
+                  <h4>Design & Media</h4>
+                  <Link to="/internships#ui-ux-design" onClick={closeMenu}>
+                    UI/UX Design
+                  </Link>
+                  <Link to="/internships#graphic-design" onClick={closeMenu}>
+                    Graphic Design
+                  </Link>
+                  <Link to="/internships#video-editing" onClick={closeMenu}>
+                    Video Editing
                   </Link>
                 </div>
               </div>
             )}
           </li>
 
-          {/* COURSES */}
           <li
             className={`nav-item dropdown ${
-              openMenu === "courses"
-                ? "active"
-                : ""
+              openMenu === "courses" ? "active" : ""
             }`}
           >
             <button
               type="button"
               className="nav-button"
-              onClick={() =>
-                toggleMenu("courses")
-              }
+              onClick={() => toggleMenu("courses")}
+              aria-expanded={openMenu === "courses"}
             >
               Courses <FaChevronDown />
             </button>
@@ -239,181 +180,132 @@ const Navbar = () => {
               <div className="dropdown-box mega">
                 <div className="mega-col">
                   <h4>Development</h4>
-
-                  <Link
-                    to="/courses#full-stack-development"
-                    onClick={closeMenu}
-                  >
-                    Full Stack
+                  <Link to="/courses#full-stack-development" onClick={closeMenu}>
+                    Full Stack Development
                   </Link>
-
-                  <Link
-                    to="/courses#mern-stack"
-                    onClick={closeMenu}
-                  >
+                  <Link to="/courses#mern-stack" onClick={closeMenu}>
                     MERN Stack
                   </Link>
-
-                  <Link
-                    to="/courses#web-development"
-                    onClick={closeMenu}
-                  >
+                  <Link to="/courses#web-development" onClick={closeMenu}>
                     Web Development
                   </Link>
                 </div>
 
                 <div className="mega-col">
-                  <h4>Creative & Testing</h4>
-
-                  <Link
-                    to="/courses#ui-ux-design"
-                    onClick={closeMenu}
-                  >
-                    UI/UX Design
+                  <h4>Artificial Intelligence</h4>
+                  <Link to="/courses#artificial-intelligence" onClick={closeMenu}>
+                    Artificial Intelligence
                   </Link>
-
-                  <Link
-                    to="/courses#graphic-design"
-                    onClick={closeMenu}
-                  >
-                    Graphic Design
+                  <Link to="/courses#machine-learning" onClick={closeMenu}>
+                    Machine Learning
                   </Link>
-
-                  <Link
-                    to="/courses#video-editing"
-                    onClick={closeMenu}
-                  >
-                    Video Editing
+                  <Link to="/courses#prompt-engineering" onClick={closeMenu}>
+                    AI Prompt Engineering
                   </Link>
+                </div>
 
-                  <Link
-                    to="/courses#cloud-computing"
-                    onClick={closeMenu}
-                  >
+                <div className="mega-col">
+                  <h4>Cloud & DevOps</h4>
+                  <Link to="/courses#cloud-computing" onClick={closeMenu}>
                     Cloud Computing
                   </Link>
+                </div>
 
-                  <Link
-                    to="/courses#software-testing"
-                    onClick={closeMenu}
-                  >
+                <div className="mega-col">
+                  <h4>Quality Engineering</h4>
+                  <Link to="/courses#software-testing" onClick={closeMenu}>
                     Software Testing
+                  </Link>
+                </div>
+
+                <div className="mega-col">
+                  <h4>Design & Media</h4>
+                  <Link to="/courses#ui-ux-design" onClick={closeMenu}>
+                    UI/UX Design
+                  </Link>
+                  <Link to="/courses#graphic-design" onClick={closeMenu}>
+                    Graphic Design
+                  </Link>
+                  <Link to="/courses#video-editing" onClick={closeMenu}>
+                    Video Editing
                   </Link>
                 </div>
               </div>
             )}
           </li>
 
-          {/* SERVICES */}
           <li
             className={`nav-item dropdown ${
-              openMenu === "services"
-                ? "active"
-                : ""
+              openMenu === "services" ? "active" : ""
             }`}
           >
             <button
               type="button"
               className="nav-button"
-              onClick={() =>
-                toggleMenu("services")
-              }
+              onClick={() => toggleMenu("services")}
+              aria-expanded={openMenu === "services"}
             >
               Services <FaChevronDown />
             </button>
 
             {openMenu === "services" && (
               <div className="dropdown-box">
-                <Link
-                  to="/services#graphic-design"
-                  onClick={closeMenu}
-                >
+                <Link to="/services#graphic-design" onClick={closeMenu}>
                   Graphic Design
                 </Link>
 
-                <Link
-                  to="/services#ui-ux-design"
-                  onClick={closeMenu}
-                >
+                <Link to="/services#ui-ux-design" onClick={closeMenu}>
                   UI/UX Design
                 </Link>
 
-                <Link
-                  to="/services#website-development"
-                  onClick={closeMenu}
-                >
+                <Link to="/services#website-development" onClick={closeMenu}>
                   Website Development
                 </Link>
 
-                <Link
-                  to="/services#digital-marketing"
-                  onClick={closeMenu}
-                >
+                <Link to="/services#digital-marketing" onClick={closeMenu}>
                   Digital Marketing
                 </Link>
               </div>
             )}
           </li>
 
-          {/* PROJECTS */}
           <li
             className={`nav-item dropdown ${
-              openMenu === "projects"
-                ? "active"
-                : ""
+              openMenu === "projects" ? "active" : ""
             }`}
           >
             <button
               type="button"
               className="nav-button"
-              onClick={() =>
-                toggleMenu("projects")
-              }
+              onClick={() => toggleMenu("projects")}
+              aria-expanded={openMenu === "projects"}
             >
               Projects <FaChevronDown />
             </button>
 
             {openMenu === "projects" && (
               <div className="dropdown-box">
-                <Link
-                  to="/projects#final-year"
-                  onClick={closeMenu}
-                >
+                <Link to="/projects#final-year" onClick={closeMenu}>
                   Final Year Projects
                 </Link>
 
-                <Link
-                  to="/projects#mini-projects"
-                  onClick={closeMenu}
-                >
+                <Link to="/projects#mini-projects" onClick={closeMenu}>
                   Mini Projects
                 </Link>
 
-                <Link
-                  to="/projects#college-projects"
-                  onClick={closeMenu}
-                >
+                <Link to="/projects#college-projects" onClick={closeMenu}>
                   College Projects
                 </Link>
 
-                <Link
-                  to="/projects#ieee-projects"
-                  onClick={closeMenu}
-                >
+                <Link to="/projects#ieee-projects" onClick={closeMenu}>
                   IEEE Projects
                 </Link>
 
-                <Link
-                  to="/projects#ai-ml-projects"
-                  onClick={closeMenu}
-                >
+                <Link to="/projects#ai-ml-projects" onClick={closeMenu}>
                   AI / ML Projects
                 </Link>
 
-                <Link
-                  to="/projects#web-development"
-                  onClick={closeMenu}
-                >
+                <Link to="/projects#web-development" onClick={closeMenu}>
                   Web Development Projects
                 </Link>
               </div>
@@ -421,39 +313,10 @@ const Navbar = () => {
           </li>
 
           <li className="nav-item">
-            <Link
-              to="/contact"
-              onClick={closeMenu}
-              className="nav-link"
-            >
+            <Link to="/contact" onClick={closeMenu} className="nav-link">
               Contact
             </Link>
           </li>
-
-          {/* MOBILE CONTACT */}
-          <div className="contact-section">
-            <a
-              href="tel:9787473068"
-              className="phone-box"
-            >
-              <FaPhoneAlt />
-              <span>9787473068</span>
-            </a>
-
-            <div className="social-icons">
-              <a href="#" aria-label="Facebook">
-                <FaFacebookF />
-              </a>
-
-              <a href="#" aria-label="Instagram">
-                <FaInstagram />
-              </a>
-
-              <a href="#" aria-label="YouTube">
-                <FaYoutube />
-              </a>
-            </div>
-          </div>
         </ul>
       </div>
     </nav>

@@ -4,11 +4,18 @@ import "./Carousel.css";
 
 import internship from "../assets/internship.jpg";
 import services from "../assets/services.jpg";
-// import career from "../assets/career.jpeg";
 import courses from "../assets/courses.png";
 import projects from "../assets/projects.jpg";
 
-const slides = [
+interface Slide {
+  title: string;
+  desc: string;
+  details: string[];
+  img: string;
+  link: string;
+}
+
+const slides: Slide[] = [
   {
     title: "Internship Programs",
     desc: "Gain real-time industry experience with expert mentors.",
@@ -17,10 +24,9 @@ const slides = [
       "Industry Mentorship from experienced professionals.",
       "Hands-on Practical Sessions for better understanding.",
       "Certificate Provided after successful completion.",
-  
     ],
     img: internship,
-    link: "/internships"
+    link: "/internships",
   },
 
   {
@@ -31,25 +37,11 @@ const slides = [
       "Mobile App Development for Android and iOS.",
       "UI/UX Design Solutions for better user experience.",
       "Software Testing and Quality Assurance.",
-      "Maintenance and Support Services."
+      "Maintenance and Support Services.",
     ],
     img: services,
-    link: "/services"
+    link: "/services",
   },
-
-  // {
-  //   title: "Career Opportunities",
-  //   desc: "Build your future with exciting career paths.",
-  //   details: [
-  //     "Job Placement Support through partner companies.",
-  //     "Resume Building with professional templates.",
-  //     "Mock Interviews with expert feedback.",
-  //     "Technical Training based on industry needs.",
-  //     "Career Guidance sessions."
-  //   ],
-  //   img: career,
-  //   link: "/careers"
-  // },
 
   {
     title: "Professional Courses",
@@ -59,10 +51,10 @@ const slides = [
       "Data Science with real-world datasets.",
       "Cloud Computing fundamentals and tools.",
       "Cybersecurity basics and practices.",
-      "AI & Machine Learning concepts."
+      "AI & Machine Learning concepts.",
     ],
     img: courses,
-    link: "/courses"
+    link: "/courses",
   },
 
   {
@@ -73,69 +65,50 @@ const slides = [
       "Industry-Level Projects with real use cases.",
       "Mini & Major Projects support.",
       "IEEE Standard Projects guidance.",
-      "Final Year Project Documentation support."
+      "Final Year Project Documentation support.",
     ],
     img: projects,
-    link: "/projects"
-  }
+    link: "/projects",
+  },
 ];
 
-const Carousel = () => {
-
-  const [index, setIndex] = useState(0);
+const Carousel: React.FC = () => {
+  const [index, setIndex] = useState<number>(0);
   const navigate = useNavigate();
 
   useEffect(() => {
-
     const interval = setInterval(() => {
-      setIndex((prev) => (prev + 1) % slides.length);
+      setIndex((prev: number) => (prev + 1) % slides.length);
     }, 5000);
 
     return () => clearInterval(interval);
-
   }, []);
 
   return (
-
     <div className="carousel-wrapper">
-
       <div className="carousel">
-
-        {slides.map((slide, i) => (
-
+        {slides.map((slide: Slide, i: number) => (
           <div
             key={i}
             className={`slide ${i === index ? "active" : ""}`}
           >
-
             {/* Image Box */}
-
             <div className="image-box">
               <img src={slide.img} alt={slide.title} />
             </div>
 
             {/* Content Box */}
-
             <div className="content-box">
-
               <h1>{slide.title}</h1>
 
-              <p className="desc">
-                {slide.desc}
-              </p>
-
-              {/* Details as Paragraph Points */}
+              <p className="desc">{slide.desc}</p>
 
               <div className="details">
-
-                {slide.details.map((point, idx) => (
-
+                {slide.details.map((point: string, idx: number) => (
                   <p key={idx} className="detail-line">
                     {point}
                   </p>
-
                 ))}
-
               </div>
 
               <button
@@ -144,35 +117,22 @@ const Carousel = () => {
               >
                 Learn More
               </button>
-
             </div>
-
           </div>
-
         ))}
-
       </div>
 
-      {/* Navigation Dots */}
-
       <div className="dots">
-
-        {slides.map((_, i) => (
-
+        {slides.map((_: Slide, i: number) => (
           <span
             key={i}
             className={`dot ${i === index ? "active-dot" : ""}`}
             onClick={() => setIndex(i)}
           />
-
         ))}
-
       </div>
-
     </div>
-
   );
-
 };
 
 export default Carousel;
